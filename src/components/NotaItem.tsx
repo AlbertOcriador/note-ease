@@ -6,6 +6,7 @@ import { Trash2, ShoppingCart, Calendar, Lightbulb, CheckSquare, Pencil, Save } 
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Separator } from '@/components/ui/separator';
 
 export type NotaCategoria = 'geral' | 'compras' | 'tarefas' | 'eventos' | 'ideias';
 
@@ -86,7 +87,7 @@ const NotaItem = ({ id, texto, categoria, checklist, data, onDelete, onEdit, onC
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        "nota-container p-4 my-2 rounded-xl shadow-sm hover:shadow-md transition-all duration-300",
+        "nota-container p-4 my-3 rounded-xl shadow-sm hover:shadow-md transition-all duration-300",
         categoriaColor
       )}
     >
@@ -108,13 +109,16 @@ const NotaItem = ({ id, texto, categoria, checklist, data, onDelete, onEdit, onC
               rows={2}
             />
           ) : (
-            <p className="text-foreground text-base leading-relaxed">{texto}</p>
+            <div className="py-1">
+              <h3 className="text-foreground text-lg font-semibold leading-relaxed">{texto}</h3>
+              {texto && checklist && checklist.length > 0 && <Separator className="my-2" />}
+            </div>
           )}
           
           {checklist && checklist.length > 0 && (
-            <div className="mt-3 space-y-2">
+            <div className="mt-1 space-y-2">
               {(isEditing ? editedChecklist : checklist)?.map((item) => (
-                <div key={item.id} className="flex items-center space-x-2">
+                <div key={item.id} className="flex items-center space-x-2 p-1.5 rounded-md hover:bg-background/50">
                   {isEditing ? (
                     <Input 
                       value={item.texto}
@@ -127,11 +131,12 @@ const NotaItem = ({ id, texto, categoria, checklist, data, onDelete, onEdit, onC
                         id={`check-${item.id}`} 
                         checked={item.completo}
                         onCheckedChange={() => onChecklistItemToggle?.(id, item.id)}
+                        className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
                       />
                       <label 
                         htmlFor={`check-${item.id}`}
                         className={cn(
-                          "text-sm cursor-pointer text-foreground",
+                          "text-sm cursor-pointer text-foreground flex-1",
                           item.completo && "line-through text-muted-foreground"
                         )}
                       >

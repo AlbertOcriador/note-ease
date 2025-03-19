@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Notebook, Calendar, User, LogOut } from 'lucide-react';
@@ -13,8 +14,12 @@ import ChecklistEditor, { ChecklistItemType } from '@/components/ChecklistEditor
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { format } from 'date-fns';
-import { ThemeToggle } from '@/components/ThemeToggle';
+import ThemeSelector from '@/components/ThemeSelector';
 import UserProfile from '@/components/UserProfile';
+import AppLogo from '@/components/AppLogo';
+import CalendarView from '@/components/CalendarView';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 
 interface Nota {
   id: string;
@@ -33,6 +38,7 @@ const Index = () => {
   const [dataEvento, setDataEvento] = useState<Date | undefined>(undefined);
   const [userName, setUserName] = useState<string>('');
   const [isUserSet, setIsUserSet] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<string>('notas');
   const inputRef = useRef<HTMLInputElement>(null);
   
   useEffect(() => {
@@ -154,6 +160,14 @@ const Index = () => {
     }
   };
 
+  const eventosCalendario = notas
+    .filter(nota => nota.categoria === 'eventos' && nota.data)
+    .map(nota => ({
+      id: nota.id,
+      date: format(new Date(nota.data!.split('/').reverse().join('-')), 'yyyy-MM-dd'),
+      title: nota.texto
+    }));
+
   const notasFiltradas = notas.filter(nota => nota.categoria === categoriaAtiva);
 
   if (!isUserSet) {
@@ -162,8 +176,8 @@ const Index = () => {
         <Card className="w-full max-w-md bg-card/80 backdrop-blur-sm">
           <CardContent className="pt-6 pb-8 px-8">
             <div className="text-center mb-6">
-              <div className="inline-flex items-center justify-center bg-primary/10 p-3 rounded-full mb-4">
-                <User className="h-8 w-8 text-primary" />
+              <div className="inline-flex items-center justify-center mb-4">
+                <AppLogo size="lg" animated={false} />
               </div>
               <h1 className="text-2xl font-bold text-foreground">Bem-vindo ao NotaFácil</h1>
               <p className="text-muted-foreground mt-2">
@@ -206,10 +220,10 @@ const Index = () => {
         <div className="text-center mb-6 relative">
           <div className="absolute right-0 top-0 flex items-center space-x-2">
             <UserProfile userName={userName} onLogout={handleLogout} />
-            <ThemeToggle />
+            <ThemeSelector />
           </div>
-          <div className="inline-flex items-center justify-center bg-primary/10 p-2 rounded-full mb-3">
-            <Notebook className="h-6 w-6 text-primary" />
+          <div className="inline-flex items-center justify-center mb-3">
+            <AppLogo size="md" />
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
             NotaFácil
@@ -219,101 +233,162 @@ const Index = () => {
           </p>
         </div>
 
-        <CategoriaSeletor 
-          categoriaAtiva={categoriaAtiva} 
-          onCategoriaChange={setCategoriaAtiva} 
-        />
+        <Tabs defaultValue="notas" className="w-full" onValueChange={setActiveTab}>
+          <TabsList className="grid grid-cols-2 mb-4">
+            <TabsTrigger value="notas">Minhas Notas</TabsTrigger>
+            <TabsTrigger value="calendario">Calendário</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="notas" className="space-y-4">
+            <CategoriaSeletor 
+              categoriaAtiva={categoriaAtiva} 
+              onCategoriaChange={setCategoriaAtiva} 
+            />
 
-        <Card className="bg-card/50 backdrop-blur-sm border shadow-sm">
-          <CardContent className="pt-6">
-            <div className="space-y-4">
-              <div className="relative">
-                <Input
-                  ref={inputRef}
-                  value={nota}
-                  onChange={(e) => setNota(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder={`${categoriaAtiva === 'geral' ? 'Digite sua anotação...' : 
-                              categoriaAtiva === 'compras' ? 'Título da sua lista de compras...' : 
-                              categoriaAtiva === 'tarefas' ? 'Título da sua lista de tarefas...' : 
-                              categoriaAtiva === 'eventos' ? 'Título do seu evento...' : 
-                              'Anote sua ideia...'}`}
-                  className="pr-4 py-6 text-base input-animation bg-background"
-                  autoComplete="off"
-                />
-              </div>
+            <Card className="bg-card/50 backdrop-blur-sm border shadow-sm">
+              <CardContent className="pt-6">
+                <div className="space-y-4">
+                  <div className="relative">
+                    <Input
+                      ref={inputRef}
+                      value={nota}
+                      onChange={(e) => setNota(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      placeholder={`${categoriaAtiva === 'geral' ? 'Digite sua anotação...' : 
+                                  categoriaAtiva === 'compras' ? 'Título da sua lista de compras...' : 
+                                  categoriaAtiva === 'tarefas' ? 'Título da sua lista de tarefas...' : 
+                                  categoriaAtiva === 'eventos' ? 'Título do seu evento...' : 
+                                  'Anote sua ideia...'}`}
+                      className="pr-4 py-6 text-base input-animation bg-background"
+                      autoComplete="off"
+                    />
+                  </div>
 
-              {showChecklist && (
-                <ChecklistEditor 
-                  items={checklistItems}
-                  onChange={setChecklistItems}
-                />
-              )}
+                  {showChecklist && (
+                    <ChecklistEditor 
+                      items={checklistItems}
+                      onChange={setChecklistItems}
+                    />
+                  )}
 
-              {categoriaAtiva === 'eventos' && (
-                <div className="flex items-center">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button 
-                        variant="outline" 
-                        className="flex gap-2"
-                        aria-label="Selecione uma data"
-                      >
-                        <Calendar className="h-4 w-4" />
-                        {dataEvento ? format(dataEvento, 'dd/MM/yyyy') : 'Selecione uma data'}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0 pointer-events-auto" align="start">
-                      <CalendarComponent
-                        mode="single"
-                        selected={dataEvento}
-                        onSelect={setDataEvento}
-                        initialFocus
-                        className="p-3 pointer-events-auto"
-                      />
-                    </PopoverContent>
-                  </Popover>
+                  {categoriaAtiva === 'eventos' && (
+                    <div className="flex items-center">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button 
+                            variant="outline" 
+                            className="flex gap-2"
+                            aria-label="Selecione uma data"
+                          >
+                            <Calendar className="h-4 w-4" />
+                            {dataEvento ? format(dataEvento, 'dd/MM/yyyy') : 'Selecione uma data'}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0 pointer-events-auto" align="start">
+                          <CalendarComponent
+                            mode="single"
+                            selected={dataEvento}
+                            onSelect={setDataEvento}
+                            initialFocus
+                            className="p-3 pointer-events-auto"
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  )}
+
+                  <Button 
+                    onClick={adicionarNota}
+                    className="button-shimmer w-full py-6 bg-primary hover:bg-primary/90 text-white"
+                    disabled={nota.trim() === '' || (categoriaAtiva === 'eventos' && !dataEvento)}
+                  >
+                    <Plus className="mr-2 h-5 w-5" />
+                    <span>Adicionar {
+                      categoriaAtiva === 'geral' ? 'Nota' : 
+                      categoriaAtiva === 'compras' ? 'Lista de Compras' : 
+                      categoriaAtiva === 'tarefas' ? 'Lista de Tarefas' : 
+                      categoriaAtiva === 'eventos' ? 'Evento' : 'Ideia'
+                    }</span>
+                  </Button>
                 </div>
-              )}
+              </CardContent>
+            </Card>
 
-              <Button 
-                onClick={adicionarNota}
-                className="button-shimmer w-full py-6 bg-primary hover:bg-primary/90 text-white"
-                disabled={nota.trim() === '' || (categoriaAtiva === 'eventos' && !dataEvento)}
-              >
-                <Plus className="mr-2 h-5 w-5" />
-                <span>Adicionar {
-                  categoriaAtiva === 'geral' ? 'Nota' : 
-                  categoriaAtiva === 'compras' ? 'Lista de Compras' : 
-                  categoriaAtiva === 'tarefas' ? 'Lista de Tarefas' : 
-                  categoriaAtiva === 'eventos' ? 'Evento' : 'Ideia'
-                }</span>
-              </Button>
+            <div className="mt-6">
+              <AnimatePresence>
+                {notasFiltradas.length === 0 ? (
+                  <EmptyState categoria={categoriaAtiva} />
+                ) : (
+                  notasFiltradas.map(item => (
+                    <NotaItem 
+                      key={item.id} 
+                      id={item.id} 
+                      texto={item.texto}
+                      categoria={item.categoria}
+                      checklist={item.checklist}
+                      data={item.data}
+                      onDelete={excluirNota}
+                      onEdit={editarNota}
+                      onChecklistItemToggle={toggleChecklistItem}
+                    />
+                  ))
+                )}
+              </AnimatePresence>
             </div>
-          </CardContent>
-        </Card>
-
-        <div className="mt-6">
-          <AnimatePresence>
-            {notasFiltradas.length === 0 ? (
-              <EmptyState categoria={categoriaAtiva} />
-            ) : (
-              notasFiltradas.map(item => (
-                <NotaItem 
-                  key={item.id} 
-                  id={item.id} 
-                  texto={item.texto}
-                  categoria={item.categoria}
-                  checklist={item.checklist}
-                  data={item.data}
-                  onDelete={excluirNota}
-                  onEdit={editarNota}
-                  onChecklistItemToggle={toggleChecklistItem}
-                />
-              ))
-            )}
-          </AnimatePresence>
-        </div>
+          </TabsContent>
+          
+          <TabsContent value="calendario">
+            <div className="space-y-4">
+              <CalendarView 
+                events={eventosCalendario}
+                onDateSelect={(date) => {
+                  setCategoriaAtiva('eventos');
+                  setDataEvento(date);
+                  setActiveTab('notas');
+                  
+                  if (inputRef.current) {
+                    setTimeout(() => {
+                      inputRef.current?.focus();
+                    }, 100);
+                  }
+                }}
+              />
+              
+              <div className="mt-4">
+                <h3 className="text-lg font-semibold mb-2">Eventos Próximos</h3>
+                <div className="space-y-2">
+                  {eventosCalendario.length === 0 ? (
+                    <p className="text-muted-foreground text-sm">Não há eventos programados.</p>
+                  ) : (
+                    eventosCalendario.map(evento => {
+                      const nota = notas.find(n => n.id === evento.id);
+                      return (
+                        <Card key={evento.id} className="p-3 flex items-center justify-between">
+                          <div>
+                            <Badge variant="outline" className="mb-1">
+                              {format(new Date(evento.date), 'dd/MM/yyyy')}
+                            </Badge>
+                            <h4 className="font-medium">{evento.title}</h4>
+                          </div>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => {
+                              setCategoriaAtiva('eventos');
+                              setActiveTab('notas');
+                            }}
+                          >
+                            Ver
+                          </Button>
+                        </Card>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </motion.div>
     </div>
   );

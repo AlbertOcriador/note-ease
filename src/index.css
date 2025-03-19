@@ -16,7 +16,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 210 100% 50%;
+    --primary: 222 100% 50%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -48,7 +48,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 100% 50%;
+    --primary: 217 91% 60%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -151,6 +151,16 @@
   @apply backdrop-blur-md bg-white/90 dark:bg-black/40 border border-white/20 dark:border-white/10 shadow-lg;
 }
 
+/* Task List com linhas separadoras */
+.task-list-item {
+  @apply border-b border-gray-100 dark:border-gray-800 last:border-0 py-2;
+}
+
+/* Checkbox estilizado */
+.checkbox-custom {
+  @apply h-5 w-5 rounded border-2 border-primary/50 checked:bg-primary checked:border-primary transition-colors focus:ring-primary/30;
+}
+
 /* Animações adicionais */
 @keyframes fadeIn {
   from { opacity: 0; }
@@ -159,6 +169,15 @@
 
 .animate-fadeIn {
   animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes pulseScale {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.animate-pulse-scale {
+  animation: pulseScale 2s ease-in-out infinite;
 }
 
 /* Estilo para mobile */
