@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { Trash2, ShoppingCart, Calendar, Party, Lightbulb, CheckSquare } from 'lucide-react';
+import { Trash2, ShoppingCart, Calendar, Lightbulb, CheckSquare } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 
 export type NotaCategoria = 'geral' | 'compras' | 'tarefas' | 'eventos' | 'ideias';
