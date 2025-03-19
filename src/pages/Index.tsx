@@ -1,6 +1,7 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Notebook, Calendar } from 'lucide-react';
+import { Plus, Notebook, Calendar, User, LogOut } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,6 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import UserProfile from '@/components/UserProfile';
 
 interface Nota {
   id: string;
@@ -30,9 +32,17 @@ const Index = () => {
   const [showChecklist, setShowChecklist] = useState(false);
   const [checklistItems, setChecklistItems] = useState<ChecklistItemType[]>([]);
   const [dataEvento, setDataEvento] = useState<Date | undefined>(undefined);
+  const [userName, setUserName] = useState<string>('');
+  const [isUserSet, setIsUserSet] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
   
   useEffect(() => {
+    const userNameSalvo = localStorage.getItem('notafacil_username');
+    if (userNameSalvo) {
+      setUserName(userNameSalvo);
+      setIsUserSet(true);
+    }
+    
     const notasSalvas = localStorage.getItem('notafacil_notas');
     if (notasSalvas) {
       try {
@@ -44,8 +54,10 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('notafacil_notas', JSON.stringify(notas));
-  }, [notas]);
+    if (isUserSet) {
+      localStorage.setItem('notafacil_notas', JSON.stringify(notas));
+    }
+  }, [notas, isUserSet]);
 
   useEffect(() => {
     if (categoriaAtiva === 'compras' || categoriaAtiva === 'tarefas') {
@@ -59,6 +71,20 @@ const Index = () => {
       setDataEvento(undefined);
     }
   }, [categoriaAtiva]);
+
+  const handleSetUserName = () => {
+    if (userName.trim()) {
+      localStorage.setItem('notafacil_username', userName.trim());
+      setIsUserSet(true);
+      toast.success(`Bem-vindo, ${userName}!`);
+    }
+  };
+
+  const handleLogout = () => {
+    setIsUserSet(false);
+    localStorage.removeItem('notafacil_username');
+    toast.info('Você saiu da sua conta');
+  };
 
   const adicionarNota = () => {
     if (nota.trim() === '') return;
@@ -93,6 +119,20 @@ const Index = () => {
     toast.success('Nota removida com sucesso!');
   };
 
+  const editarNota = (id: string, novoTexto: string, novoChecklist?: ChecklistItemType[]) => {
+    setNotas(notas.map(nota => {
+      if (nota.id === id) {
+        return {
+          ...nota,
+          texto: novoTexto,
+          checklist: novoChecklist
+        };
+      }
+      return nota;
+    }));
+    toast.success('Nota atualizada com sucesso!');
+  };
+
   const toggleChecklistItem = (notaId: string, itemId: string) => {
     setNotas(notas.map(nota => {
       if (nota.id === notaId && nota.checklist) {
@@ -117,16 +157,56 @@ const Index = () => {
 
   const notasFiltradas = notas.filter(nota => nota.categoria === categoriaAtiva);
 
+  if (!isUserSet) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 sm:px-6">
+        <Card className="w-full max-w-md bg-card/80 backdrop-blur-sm">
+          <CardContent className="pt-6 pb-8 px-8">
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center justify-center bg-primary/10 p-3 rounded-full mb-4">
+                <User className="h-8 w-8 text-primary" />
+              </div>
+              <h1 className="text-2xl font-bold text-foreground">Bem-vindo ao NotaFácil</h1>
+              <p className="text-muted-foreground mt-2">
+                Por favor, digite seu nome para começar
+              </p>
+            </div>
+            
+            <div className="space-y-4">
+              <Input
+                autoFocus
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSetUserName()}
+                placeholder="Seu nome"
+                className="text-base py-6"
+              />
+              
+              <Button 
+                onClick={handleSetUserName}
+                className="w-full button-shimmer py-6 bg-primary hover:bg-primary/90 text-white"
+                disabled={!userName.trim()}
+              >
+                Continuar
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col items-center bg-background px-4 sm:px-6">
       <motion.div 
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: a0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="w-full max-w-2xl pt-8 sm:pt-12 pb-20"
       >
         <div className="text-center mb-6 relative">
-          <div className="absolute right-0 top-0">
+          <div className="absolute right-0 top-0 flex items-center space-x-2">
+            <UserProfile userName={userName} onLogout={handleLogout} />
             <ThemeToggle />
           </div>
           <div className="inline-flex items-center justify-center bg-primary/10 p-2 rounded-full mb-3">
@@ -228,6 +308,7 @@ const Index = () => {
                   checklist={item.checklist}
                   data={item.data}
                   onDelete={excluirNota}
+                  onEdit={editarNota}
                   onChecklistItemToggle={toggleChecklistItem}
                 />
               ))
