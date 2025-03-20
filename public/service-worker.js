@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'notafacil-v4';
+const CACHE_NAME = 'notafacil-v5';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -50,6 +50,7 @@ self.addEventListener('fetch', (event) => {
   if (event.request.url.includes('.apk') || 
       event.request.url.includes('/download/') ||
       event.request.url.includes('github.com/releases')) {
+    // Permitir que a requisição prossiga normalmente sem intervenção do service worker
     return;
   }
   
@@ -85,13 +86,6 @@ self.addEventListener('fetch', (event) => {
             // Se a requisição falhar (por exemplo, offline),
             // tente servir a página offline para navegações
             if (event.request.mode === 'navigate') {
-              return caches.match('/offline.html');
-            }
-            
-            // Para arquivos de download que falham, redirecionar para a página de erro
-            if (event.request.url.includes('.apk') || 
-                event.request.url.includes('/download/') ||
-                event.request.url.includes('github.com/releases')) {
               return caches.match('/offline.html');
             }
           });

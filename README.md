@@ -28,7 +28,7 @@ Para instalar o aplicativo diretamente do navegador:
 ### Versão Android (APK) - Download Direto
 
 **Link para download direto:**
-👉 [CLIQUE AQUI PARA BAIXAR O APK (Android)](https://github.com/releases/download/v1.0/notafacil.apk)
+👉 [CLIQUE AQUI PARA BAIXAR O APK (Android)](https://36199513-9819-4027-9168-b1abb3b8e3ee.lovableproject.com/download/notafacil.apk)
 
 Instruções após baixar:
 1. Toque no arquivo APK baixado nas notificações ou abra-o usando seu gerenciador de arquivos
