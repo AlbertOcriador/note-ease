@@ -2,7 +2,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'app.lovable.36199513981940279168b1abb3b8e3ee',
+  appId: 'app.lovable.notafacil',
   appName: 'NotaFácil',
   webDir: 'dist',
   server: {
@@ -12,7 +12,19 @@ const config: CapacitorConfig = {
   plugins: {
     SplashScreen: {
       launchShowDuration: 2000,
-      backgroundColor: "#FFFFFF"
+      backgroundColor: "#FFFFFF",
+      androidSplashResourceName: "splash",
+      androidScaleType: "CENTER_CROP"
+    },
+    LocalNotifications: {
+      smallIcon: "ic_stat_icon_config_sample",
+      iconColor: "#7c3aed"
+    }
+  },
+  android: {
+    buildOptions: {
+      keystorePath: 'notafacil.keystore',
+      keystoreAlias: 'notafacil',
     }
   }
 };
