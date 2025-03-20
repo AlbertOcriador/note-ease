@@ -20,6 +20,7 @@ import AppLogo from '@/components/AppLogo';
 import CalendarView from '@/components/CalendarView';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import { supabase } from "@/integrations/supabase/client";
 
 interface Nota {
   id: string;
@@ -39,6 +40,7 @@ const Index = () => {
   const [userName, setUserName] = useState<string>('');
   const [isUserSet, setIsUserSet] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>('notas');
+  const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine);
   const inputRef = useRef<HTMLInputElement>(null);
   
   useEffect(() => {
@@ -56,6 +58,15 @@ const Index = () => {
         console.error('Erro ao carregar notas:', e);
       }
     }
+    
+    // Adicionar listeners para status de conexão
+    window.addEventListener('online', () => setIsOnline(true));
+    window.addEventListener('offline', () => setIsOnline(false));
+    
+    return () => {
+      window.removeEventListener('online', () => setIsOnline(true));
+      window.removeEventListener('offline', () => setIsOnline(false));
+    };
   }, []);
 
   useEffect(() => {
@@ -170,6 +181,13 @@ const Index = () => {
 
   const notasFiltradas = notas.filter(nota => nota.categoria === categoriaAtiva);
 
+  // Indicador de status de conexão
+  const ConnectionStatus = () => (
+    <div className={`fixed bottom-4 right-4 px-3 py-1 rounded-full text-xs font-medium ${isOnline ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100' : 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100'}`}>
+      {isOnline ? 'Online' : 'Offline'}
+    </div>
+  );
+
   if (!isUserSet) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 sm:px-6">
@@ -177,7 +195,7 @@ const Index = () => {
           <CardContent className="pt-6 pb-8 px-8">
             <div className="text-center mb-6">
               <div className="inline-flex items-center justify-center mb-4">
-                <AppLogo size="lg" animated={false} />
+                <AppLogo size="lg" animated={true} />
               </div>
               <h1 className="text-2xl font-bold text-foreground">Bem-vindo ao NotaFácil</h1>
               <p className="text-muted-foreground mt-2">
@@ -223,7 +241,7 @@ const Index = () => {
             <ThemeSelector />
           </div>
           <div className="inline-flex items-center justify-center mb-3">
-            <AppLogo size="md" />
+            <AppLogo size="md" animated={true} />
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
             NotaFácil
@@ -390,6 +408,8 @@ const Index = () => {
           </TabsContent>
         </Tabs>
       </motion.div>
+      
+      <ConnectionStatus />
     </div>
   );
 };
