@@ -25,14 +25,20 @@ Para instalar o aplicativo diretamente do navegador:
 3. No navegador Safari (iOS): toque em "Compartilhar" e depois em "Adicionar à Tela de Início"
 4. No navegador Chrome (Android): toque no menu (três pontos) e depois em "Instalar aplicativo"
 
-### Versão Android (APK)
+### Versão Android (APK) - Download Direto
 
-Para instalar diretamente como aplicativo Android:
+**Link para download direto:**
+👉 [CLIQUE AQUI PARA BAIXAR O APK (Android)](https://github.com/releases/download/v1.0/notafacil.apk)
 
-1. [Baixe o APK aqui (clique para baixar)](https://github.com/seu-usuario/notafacil/releases/latest/download/notafacil.apk)
-2. Quando o download terminar, abra o arquivo APK no seu dispositivo
-3. Se solicitado, permita a instalação de aplicativos de fontes desconhecidas nas configurações do seu dispositivo
-4. Siga as instruções na tela para concluir a instalação
+Instruções após baixar:
+1. Toque no arquivo APK baixado nas notificações ou abra-o usando seu gerenciador de arquivos
+2. Se solicitado, permita a instalação de aplicativos de fontes desconhecidas:
+   - Vá para Configurações > Segurança > Instalar apps desconhecidos
+   - Ou toque em "Configurações" quando solicitado durante a instalação
+3. Siga as instruções na tela para concluir a instalação
+4. Após a instalação, o ícone do NotaFácil aparecerá na sua tela inicial
+
+**Problemas para baixar?** Tente instalar como PWA (método acima) que é mais simples e rápido!
 
 ### Versão iOS via TestFlight
 
