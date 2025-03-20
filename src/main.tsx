@@ -39,12 +39,17 @@ if ('serviceWorker' in navigator) {
 window.addEventListener('online', () => {
   toast.success('Você está online novamente!');
   
-  // Trigger sync quando voltar online
+  // Trigger sync quando voltar online - verifica se a API de sincronização está disponível
   if ('serviceWorker' in navigator && 'SyncManager' in window) {
     navigator.serviceWorker.ready.then(registration => {
-      registration.sync.register('sync-notas').catch(err => {
-        console.error('Erro ao registrar sincronização em segundo plano:', err);
-      });
+      // Verifica se o objeto sync existe na registration antes de usá-lo
+      if (registration.sync) {
+        registration.sync.register('sync-notas').catch(err => {
+          console.error('Erro ao registrar sincronização em segundo plano:', err);
+        });
+      } else {
+        console.log('Background Sync API não está disponível neste navegador');
+      }
     });
   }
 });
