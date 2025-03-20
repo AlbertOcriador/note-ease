@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'notafacil-v2';
+const CACHE_NAME = 'notafacil-v3';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -78,6 +78,12 @@ self.addEventListener('fetch', (event) => {
             // Se a requisição falhar (por exemplo, offline),
             // tente servir a página offline para navegações
             if (event.request.mode === 'navigate') {
+              return caches.match('/offline.html');
+            }
+            
+            // Para arquivos de download que falham, redirecionar para a página de erro
+            if (event.request.url.includes('.apk') || 
+                event.request.url.includes('/download/')) {
               return caches.match('/offline.html');
             }
           });

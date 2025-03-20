@@ -16,34 +16,40 @@
 
 ## 📥 Como instalar
 
-### Versão Web (PWA)
+### Versão Web (PWA) - Mais rápido e fácil!
+
+Para instalar o aplicativo diretamente do navegador:
 
 1. Acesse o aplicativo pelo link: [NotaFácil Web App](https://36199513-9819-4027-9168-b1abb3b8e3ee.lovableproject.com)
-2. No navegador Chrome/Edge (desktop): clique no ícone de instalação na barra de endereço
+2. No navegador Chrome/Edge (desktop): clique no ícone de instalação na barra de endereço (símbolo "+" que aparece)
 3. No navegador Safari (iOS): toque em "Compartilhar" e depois em "Adicionar à Tela de Início"
 4. No navegador Chrome (Android): toque no menu (três pontos) e depois em "Instalar aplicativo"
 
-### Versão Android
+### Versão Android (APK)
 
-1. [Baixe o APK aqui](https://github.com/seu-usuario/notafacil/releases/download/v1.0.0/notafacil-v1.0.0.apk)
-2. Abra o arquivo APK no seu dispositivo Android
-3. Siga as instruções para instalar (pode ser necessário permitir a instalação de apps de fontes desconhecidas)
+Para instalar diretamente como aplicativo Android:
 
-### Versão iOS
+1. [Baixe o APK aqui (clique para baixar)](https://github.com/seu-usuario/notafacil/releases/latest/download/notafacil.apk)
+2. Quando o download terminar, abra o arquivo APK no seu dispositivo
+3. Se solicitado, permita a instalação de aplicativos de fontes desconhecidas nas configurações do seu dispositivo
+4. Siga as instruções na tela para concluir a instalação
 
-1. [Baixe o TestFlight aqui](https://testflight.apple.com/join/seu-codigo)
-2. Siga as instruções no TestFlight para instalar o aplicativo
+### Versão iOS via TestFlight
+
+Por restrições da Apple, aplicativos iOS precisam ser distribuídos via TestFlight:
+
+1. [Instale o TestFlight no seu iPhone/iPad](https://apps.apple.com/br/app/testflight/id899247664)
+2. [Acesse este link no seu dispositivo iOS](https://testflight.apple.com/join/notafacil-code) para instalar o NotaFácil
 
 ## 🛠️ Tecnologias utilizadas
 
 - React
 - TypeScript
 - Tailwind CSS
-- Framer Motion
-- Capacitor
-- Supabase
+- Capacitor (para versões nativas)
+- Service Worker (para funcionalidade offline)
 
-## 🔄 Sincronização
+## 🔄 Sincronização e Funcionalidade Offline
 
 O NotaFácil salva suas notas localmente e as sincroniza quando você está online. Isso significa que você pode usar o aplicativo mesmo sem conexão com a internet!
 

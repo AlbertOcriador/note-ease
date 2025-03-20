@@ -48,9 +48,18 @@
       border-radius: 8px;
       text-decoration: none;
       transition: background-color 0.2s;
+      margin-bottom: 15px;
     }
     .button:hover {
       background-color: #2563eb;
+    }
+    .message {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #fffbeb;
+      border-left: 4px solid #fbbf24;
+      border-radius: 4px;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -59,7 +68,15 @@
     <div class="icon">📝</div>
     <h1>Você está offline</h1>
     <p>Parece que você está sem conexão com a internet. O NotaFácil funciona offline, mas você precisa ter acessado pelo menos uma vez para usar.</p>
+    
     <a href="/" class="button">Tentar novamente</a>
+    
+    <div class="message">
+      <strong>Tentando baixar o aplicativo?</strong><br>
+      Se você estava tentando baixar o NotaFácil, você precisa estar online. Conecte-se à internet e tente novamente.
+      <br><br>
+      A forma mais rápida de instalar é diretamente do navegador como PWA. Acesse o site e clique no ícone de instalação.
+    </div>
   </div>
 </body>
 </html>
