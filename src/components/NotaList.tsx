@@ -1,9 +1,9 @@
 
 import React from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { NotaCategoria } from './NotaItem';
-import NotaItem, { ChecklistItemType } from './NotaItem';
+import NotaItem, { NotaCategoria } from './NotaItem';
 import EmptyState from './EmptyState';
+import { ChecklistItemType } from '@/components/ChecklistEditor';
 
 interface Nota {
   id: string;
