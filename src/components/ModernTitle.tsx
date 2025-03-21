@@ -59,15 +59,7 @@ const ModernTitle = ({ size = 'md', colorful = true }: ModernTitleProps) => {
             className={
               colorful
                 ? `
-                  ${index === 0 ? 'text-blue-600 dark:text-blue-400' : ''}
-                  ${index === 1 ? 'text-blue-500 dark:text-blue-300' : ''}
-                  ${index === 2 ? 'text-indigo-600 dark:text-indigo-400' : ''}
-                  ${index === 3 ? 'text-indigo-500 dark:text-indigo-300' : ''}
-                  ${index === 4 ? 'text-purple-600 dark:text-purple-400' : ''}
-                  ${index === 5 ? 'text-purple-500 dark:text-purple-300' : ''}
-                  ${index === 6 ? 'text-fuchsia-600 dark:text-fuchsia-400' : ''}
-                  ${index === 7 ? 'text-fuchsia-500 dark:text-fuchsia-300' : ''}
-                  ${index === 8 ? 'text-pink-500 dark:text-pink-400' : ''}
+                  ${index % 2 === 0 ? 'text-primary dark:text-primary' : 'text-primary/80 dark:text-primary/80'}
                   inline-block transition-transform duration-200
                 `
                 : 'text-foreground'
