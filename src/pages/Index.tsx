@@ -1,7 +1,6 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Notebook, Calendar, User, LogOut } from 'lucide-react';
+import { Plus, Notebook, Calendar, User, LogOut, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,6 +20,7 @@ import CalendarView from '@/components/CalendarView';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from "@/integrations/supabase/client";
+import ModernTitle from '@/components/ModernTitle';
 
 interface Nota {
   id: string;
@@ -41,6 +41,8 @@ const Index = () => {
   const [isUserSet, setIsUserSet] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>('notas');
   const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine);
+  const [isPwaInstallable, setIsPwaInstallable] = useState<boolean>(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   
   useEffect(() => {
@@ -59,7 +61,6 @@ const Index = () => {
       }
     }
     
-    // Adicionar listeners para status de conexão
     window.addEventListener('online', () => setIsOnline(true));
     window.addEventListener('offline', () => setIsOnline(false));
     
@@ -87,6 +88,20 @@ const Index = () => {
       setDataEvento(undefined);
     }
   }, [categoriaAtiva]);
+
+  useEffect(() => {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setIsPwaInstallable(true);
+    });
+    
+    return () => {
+      window.removeEventListener('beforeinstallprompt', () => {
+        setIsPwaInstallable(false);
+      });
+    };
+  }, []);
 
   const handleSetUserName = () => {
     if (userName.trim()) {
@@ -181,7 +196,6 @@ const Index = () => {
 
   const notasFiltradas = notas.filter(nota => nota.categoria === categoriaAtiva);
 
-  // Indicador de status de conexão
   const ConnectionStatus = () => (
     <div className={`fixed bottom-4 right-4 px-3 py-1 rounded-full text-xs font-medium ${isOnline ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100' : 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100'}`}>
       {isOnline ? 'Online' : 'Offline'}
@@ -197,7 +211,7 @@ const Index = () => {
               <div className="inline-flex items-center justify-center mb-4">
                 <AppLogo size="lg" animated={true} />
               </div>
-              <h1 className="text-2xl font-bold text-foreground">Bem-vindo ao NotaFácil</h1>
+              <ModernTitle size="md" colorful={true} />
               <p className="text-muted-foreground mt-2">
                 Por favor, digite seu nome para começar
               </p>
@@ -243,12 +257,39 @@ const Index = () => {
           <div className="inline-flex items-center justify-center mb-3">
             <AppLogo size="md" animated={true} />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
-            NotaFácil
-          </h1>
+          <ModernTitle size="md" colorful={true} />
           <p className="text-muted-foreground mt-2">
             Suas anotações organizadas em um só lugar.
           </p>
+          
+          <div className="flex flex-wrap justify-center gap-2 mt-4">
+            {isPwaInstallable && (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex items-center gap-1 text-xs" 
+                onClick={handleInstallPwa}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7"></path>
+                  <line x1="16" y1="5" x2="22" y2="5"></line>
+                  <line x1="19" y1="2" x2="19" y2="8"></line>
+                  <circle cx="9" cy="9" r="2"></circle>
+                  <path d="m21 15-3.4-3.4a2 2 0 0 0-2.8 0l-7.4 7.4"></path>
+                </svg>
+                Instalar App
+              </Button>
+            )}
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="flex items-center gap-1 text-xs" 
+              onClick={downloadApk}
+            >
+              <Download size={14} />
+              Baixar para Android
+            </Button>
+          </div>
         </div>
 
         <Tabs defaultValue="notas" className="w-full" onValueChange={setActiveTab}>

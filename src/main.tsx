@@ -58,5 +58,42 @@ window.addEventListener('offline', () => {
   toast.error('Você está offline. Algumas funcionalidades podem não estar disponíveis.');
 });
 
+// Detectar se o aplicativo pode ser instalado como PWA
+let deferredPrompt: any;
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevenir a exibição automática do prompt
+  e.preventDefault();
+  // Armazenar o evento para uso posterior
+  deferredPrompt = e;
+  // Notificar o usuário que o app pode ser instalado
+  toast.info('Instale o NotaFácil para usar offline!', {
+    action: {
+      label: 'Instalar',
+      onClick: () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult: { outcome: string }) => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('Usuário aceitou a instalação do PWA');
+              toast.success('Obrigado por instalar o NotaFácil!');
+            } else {
+              console.log('Usuário recusou a instalação do PWA');
+            }
+            deferredPrompt = null;
+          });
+        }
+      }
+    },
+    duration: 15000
+  });
+});
+
+// Detectar se o app já está instalado
+window.addEventListener('appinstalled', () => {
+  console.log('PWA instalado com sucesso');
+  toast.success('NotaFácil foi instalado com sucesso!');
+  deferredPrompt = null;
+});
+
 // Inicializar a aplicação
 createRoot(document.getElementById("root")!).render(<App />);
