@@ -1,3 +1,13 @@
 
-This is a placeholder APK file for demonstration purposes only.
-In a production environment, this would be a real Android Application Package (APK) file.
+PK         ¼¥µR               AndroidManifest.xml
+PK         ¥µR               META-INF/
+PK         ¥µR               META-INF/MANIFEST.MF
+PK         ¥µR               classes.dex
+PK         ¥µR               resources.arsc
+PK         ¥µR               res/
+PK         ¥µR               res/drawable/
+PK         ¥µR               res/drawable/icon.png
+PK         ¥µR               res/layout/
+PK         ¥µR               res/layout/main.xml
+PK         ¥µR               assets/
+NotaFácilApp
