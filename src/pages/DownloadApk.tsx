@@ -13,6 +13,7 @@ const DownloadApk = () => {
       const link = document.createElement('a');
       link.href = '/download/notafacil.apk';
       link.download = 'notafacil.apk';
+      link.setAttribute('type', 'application/vnd.android.package-archive');
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -22,7 +23,13 @@ const DownloadApk = () => {
   }, []);
 
   const manualDownload = () => {
-    window.location.href = '/download/notafacil.apk';
+    const link = document.createElement('a');
+    link.href = '/download/notafacil.apk';
+    link.download = 'notafacil.apk';
+    link.setAttribute('type', 'application/vnd.android.package-archive');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (

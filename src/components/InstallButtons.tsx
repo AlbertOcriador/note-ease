@@ -41,7 +41,10 @@ const InstallButtons = () => {
     navigate('/download');
   };
 
-  if (!isPwaInstallable && !navigator.userAgent.includes('Android')) {
+  // If device is iOS or desktop, don't show Android download button
+  const isAndroid = /Android/i.test(navigator.userAgent);
+
+  if (!isPwaInstallable && !isAndroid) {
     return null;
   }
 
@@ -64,15 +67,17 @@ const InstallButtons = () => {
           Instalar App
         </Button>
       )}
-      <Button 
-        variant="outline" 
-        size="sm" 
-        className="flex items-center gap-1 text-xs" 
-        onClick={handleDownloadApk}
-      >
-        <Download size={14} />
-        Baixar para Android
-      </Button>
+      {isAndroid && (
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="flex items-center gap-1 text-xs" 
+          onClick={handleDownloadApk}
+        >
+          <Download size={14} />
+          Baixar para Android
+        </Button>
+      )}
     </div>
   );
 };

@@ -2,28 +2,24 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { Trash2, ShoppingCart, Calendar, Lightbulb, CheckSquare, Pencil, Save } from 'lucide-react';
+import { Trash2, ShoppingCart, Calendar, Lightbulb, CheckSquare, Pencil, Save, Plus } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
+import { ChecklistItemType } from '@/components/ChecklistEditor';
 
 export type NotaCategoria = 'geral' | 'compras' | 'tarefas' | 'eventos' | 'ideias';
-
-interface ChecklistItem {
-  id: string;
-  texto: string;
-  completo: boolean;
-}
 
 export interface NotaItemProps {
   id: string;
   texto: string;
   categoria: NotaCategoria;
-  checklist?: ChecklistItem[];
+  checklist?: ChecklistItemType[];
   data?: string;
   onDelete: (id: string) => void;
-  onEdit: (id: string, texto: string, checklist?: ChecklistItem[]) => void;
+  onEdit: (id: string, texto: string, checklist?: ChecklistItemType[]) => void;
   onChecklistItemToggle?: (notaId: string, itemId: string) => void;
 }
 
@@ -62,7 +58,8 @@ const NotaItem = ({ id, texto, categoria, checklist, data, onDelete, onEdit, onC
   const categoriaColor = getCategoriaColor(categoria);
   const [isEditing, setIsEditing] = useState(false);
   const [editedTexto, setEditedTexto] = useState(texto);
-  const [editedChecklist, setEditedChecklist] = useState<ChecklistItem[] | undefined>(checklist);
+  const [editedChecklist, setEditedChecklist] = useState<ChecklistItemType[] | undefined>(checklist);
+  const [newItem, setNewItem] = useState('');
 
   const handleSaveEdit = () => {
     onEdit(id, editedTexto, editedChecklist);
@@ -79,6 +76,23 @@ const NotaItem = ({ id, texto, categoria, checklist, data, onDelete, onEdit, onC
       return item;
     }));
   };
+
+  const handleAddItem = () => {
+    if (newItem.trim() === '') return;
+    
+    const newChecklistItem: ChecklistItemType = {
+      id: Date.now().toString(),
+      texto: newItem.trim(),
+      completo: false
+    };
+    
+    const updatedChecklist = [...(editedChecklist || []), newChecklistItem];
+    setEditedChecklist(updatedChecklist);
+    onEdit(id, editedTexto, updatedChecklist);
+    setNewItem('');
+  };
+
+  const showAddItemField = categoria === 'compras' || categoria === 'tarefas';
 
   return (
     <motion.div
@@ -146,6 +160,27 @@ const NotaItem = ({ id, texto, categoria, checklist, data, onDelete, onEdit, onC
                   )}
                 </div>
               ))}
+            </div>
+          )}
+          
+          {!isEditing && showAddItemField && (
+            <div className="mt-4 flex gap-2">
+              <Input
+                value={newItem}
+                onChange={(e) => setNewItem(e.target.value)}
+                placeholder={`Adicionar ${categoria === 'compras' ? 'produto' : 'tarefa'}...`}
+                className="flex-1 h-8 text-sm"
+                onKeyDown={(e) => e.key === 'Enter' && handleAddItem()}
+              />
+              <Button 
+                size="sm" 
+                variant="outline"
+                className="h-8 px-2"
+                onClick={handleAddItem}
+                disabled={newItem.trim() === ''}
+              >
+                <Plus size={16} />
+              </Button>
             </div>
           )}
         </div>
